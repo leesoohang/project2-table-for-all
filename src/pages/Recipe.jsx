@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import "bootstrap/dist/css/bootstrap.css";
+import InfoImg from "../assets/info.jpg";
+import Download from '../components/Download';
 
 const Recipe = () => {
 	const [details, setDetails] = useState({});
@@ -9,12 +12,14 @@ const Recipe = () => {
 	const params = useParams();
 
 	const fetchDetails = async () => {
-		const resp = await fetch(
-			`https://api.spoonacular.com/recipes/${params.id}/information?apiKey=${process.env.REACT_APP_FOOD_API_KEY}`
+		const res = await fetch(
+			`https://api.spoonacular.com/recipes/${params.id}/information?apiKey=8566f284fe514e5889d5a1578ab3f80a`
 		);
-		const data = await resp.json();
+		const data = await res.json();
 		return data;
 	};
+
+	
 
 	useEffect(() => {
 		let isMounted = true;
@@ -28,88 +33,100 @@ const Recipe = () => {
 	}, [params.id]);
 
 	return (
-		<Wrapper>
-			<div>
-				<h2>{details.title}</h2>
-				<img src={details.image} alt={details.title} />
-			</div>
-			<Info>
-				<Button
-					className={activeTab === "ingredients" ? "active" : ""}
-					onClick={() => setActiveTab("ingredients")}
-				>
-					Ingredients
-				</Button>
-				<Button
-					className={activeTab === "instructions" ? "active" : ""}
-					onClick={() => setActiveTab("instructions")}
-				>
-					Instructions
-				</Button>
-				{activeTab === "ingredients" && (
-					<ul>
-						{details.extendedIngredients.map(({ id, original }) => (
-							<li key={id}>{original}</li>
-						))}
-					</ul>
-				)}
+		<div>
+			<div className="container-fliud">
+				<div className="row m-3 d-flex justify-content-around">
+					<div className="col-lg-4 col-md-10 col-sm-12 ">
+						<div className="card  rounded-5">
+							<img
+								src={details.image}
+								className="rounded-5 card-img-top"
+								alt={details.title}
+							/>
 
-				{activeTab === "instructions" && (
-					<div>
-						<p dangerouslySetInnerHTML={{ __html: details.summary }}></p>
-						<p dangerouslySetInnerHTML={{ __html: details.instructions }}></p>
+							<div className="card-body handwritten">
+								<h2 className="card-title m-3 fs-1">{details.title}</h2>
+							</div>
+							<ul className="list-group list-group-flush m-2 handwritten fs-3">
+								<li className="list-group-item">
+									{" "}
+									Vegetarian: {`${details.vegetarian}`}
+								</li>
+								<li className="list-group-item">Vegan: {`${details.vegan}`}</li>
+								<li className="list-group-item">
+									Gluten free: {`${details.glutenFree}`}
+								</li>
+								<li className="list-group-item">
+									Dairy free: {`${details.dairyFree}`}
+								</li>
+								<li className="list-group-item">Serves: {details.servings}</li>
+								<li className="list-group-item">
+									Cooking time: {details.readyInMinutes} minutes
+								</li>
+							</ul>
+						</div>
 					</div>
-				)}
-			</Info>
-		</Wrapper>
+					<div
+						className="col-lg-7 col-md-10 col-sm-12 m-2 text-black text-start fs-4"
+						style={{
+							backgroundImage: `url(${InfoImg})`,
+							backgroundSize: "cover",
+						}}
+					>
+						<Button
+							className={activeTab === "ingredients" ? "active" : ""}
+							onClick={() => setActiveTab("ingredients")}
+						>
+							Ingredients
+						</Button>
+						<Button
+							className={activeTab === "instructions" ? "active" : ""}
+							onClick={() => setActiveTab("instructions")}
+						>
+							Instructions
+						</Button>
+						<Button 
+							className={activeTab === "download" ? "active" : ""}
+							onClick={() => setActiveTab("download")}
+						>
+							Download
+						</Button>
+
+						{activeTab === "ingredients" && (
+							<div className="p-5 info">
+								<div>
+									{details.extendedIngredients.map(({ id, original }) => (
+										<p key={id}>{original}</p>
+									))}
+								</div>
+							</div>
+						)}
+
+						{activeTab === "instructions" && (
+							<div className="container p-5 info">
+								<div
+									dangerouslySetInnerHTML={{ __html: details.summary }}
+								></div>
+								<div
+									className="mt-5"
+									dangerouslySetInnerHTML={{ __html: details.instructions }}
+								></div>
+							</div>
+						)}
+
+						{activeTab === "download" && (
+							<div className="p-5 info">
+								<Download download={
+									`${details.title}\n\n${details.summary.replace(/(<([^>]+)>)/ig, '')}\n\nIngredients:\n${details.extendedIngredients.map(({ id, original }) => (`${original}\n`)).join("")}\n\nInstructions: \n${details.instructions.replace(/(<([^>]+)>)/ig, '')}`
+								} />
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
 	);
 };
-
-const Wrapper = styled.div`
-	margin: 10rem inherit 5rem;
-	display: flex;
-
-	@media (max-width: 1068px) {
-		flex-direction: column;
-	}
-
-	.active {
-		background: linear-gradient(35deg, #494949, #313131);
-		color: #fff;
-	}
-
-	h2 {
-		margin-bottom: 2rem;
-	}
-
-	ul {
-		margin-top: 2rem;
-	}
-
-	li {
-		font-size: 1.2rem;
-		line-height: 2.5rem;
-	}
-
-	p {
-		margin: 1rem 0;
-		font-size: 1.1rem;
-		line-height: 1.8rem;
-
-		&:first-child {
-			margin-top: 2rem;
-		}
-	}
-`;
-
-const Button = styled.button`
-	padding: 1rem 2rem;
-	color: #313131;
-	background: #fff;
-	border: 2px solid #000;
-	margin-right: 2rem;
-	font-weight: 600;
-`;
 
 const Info = styled.div`
 	margin-left: 5rem;
@@ -118,6 +135,18 @@ const Info = styled.div`
 		margin-top: 3rem;
 		margin-left: 1rem;
 	}
+`;
+const Button = styled.button`
+	padding: 1rem 2rem;
+	// color: none;
+	background: transparent;
+	// border: 2px solid #000;
+	text-decoration: underline;
+	text-underline-offset: 15px;
+	margin-right: 2rem;
+	font-weight: 400;
+	font-size: 2rem;
+	font-family: "Shadows Into Light", cursive;
 `;
 
 export default Recipe;
