@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.css";
 import InfoImg from "../assets/info.jpg";
-import Download from '../components/Download';
+import Download from "../components/Download";
 
 const Recipe = () => {
 	const [details, setDetails] = useState({});
@@ -18,8 +18,6 @@ const Recipe = () => {
 		const data = await res.json();
 		return data;
 	};
-
-	
 
 	useEffect(() => {
 		let isMounted = true;
@@ -85,7 +83,7 @@ const Recipe = () => {
 						>
 							Instructions
 						</Button>
-						<Button 
+						<Button
 							className={activeTab === "download" ? "active" : ""}
 							onClick={() => setActiveTab("download")}
 						>
@@ -116,9 +114,40 @@ const Recipe = () => {
 
 						{activeTab === "download" && (
 							<div className="p-5 info">
-								<Download download={
-									`${details.title}\n\n${details.summary.replace(/(<([^>]+)>)/ig, '')}\n\nIngredients:\n${details.extendedIngredients.map(({ id, original }) => (`${original}\n`)).join("")}\n\nInstructions: \n${details.instructions.replace(/(<([^>]+)>)/ig, '')}`
-								} />
+								<Download
+									download={`<h1 style="text-align:center;">${
+										details.title
+									}</h1>
+										<div style="text-align:center"><img
+								src=${details.image}
+								
+								alt=${details.title}
+							/>
+							<ul className="list-group list-group-flush m-2 handwritten fs-3">
+								<li className="list-group-item">
+									
+									Vegetarian: ${details.vegetarian}
+								</li>
+								<li className="list-group-item">Vegan: ${details.vegan}</li>
+								<li className="list-group-item">
+									Gluten free: ${details.glutenFree}
+								</li>
+								<li className="list-group-item">
+									Dairy free: ${details.dairyFree}
+								</li>
+								<li className="list-group-item">Serves: ${details.servings}</li>
+								<li className="list-group-item">
+									Cooking time: ${details.readyInMinutes} minutes
+								</li>
+							</ul></div>
+										<p>${details.summary}</p>
+										<br><h2>Ingredients:</h2>
+										${details.extendedIngredients
+											.map(({ id, original }) => `${original}\n`)
+											.join("")}
+											<h2>Instructions:</h2>
+											${details.instructions}`}
+								/>
 							</div>
 						)}
 					</div>

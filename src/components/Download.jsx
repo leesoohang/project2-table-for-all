@@ -28,7 +28,7 @@ function Download(props) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		download(`${fileName.FN}.txt`, props.download);
+		download(`${fileName.FN}.html`, props.download);
 	};
 
 	return (
