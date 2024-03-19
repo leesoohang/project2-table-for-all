@@ -8,6 +8,10 @@ Using natural language keywords, such as cuisines, ingredients and nutrients, us
 
 Step-by-step instructions, nutrition facts and accurate measurements of ingredients are presented for individual recipes. Users can also export the entire recipe to a text document file.
 
+Link to the live application:
+
+https://regal-cucurucho-a20175.netlify.app/
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -40,8 +44,6 @@ This application has been deployed to Netlify as a client side web application. 
 - Recipe export as local text file
 
 ## Usage
-
-Please visit the deployed application [link](https://table-for-all.netlify.app), and follow the following demo video to use:
 
 1. To search for a recipe, type the search keyword or ingredient (or a mix of both) in the search bar, and then indicate your required dietary intolerances and press the search button.
    ![home](./assets/screenshot-home.png)
